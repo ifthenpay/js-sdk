@@ -1,0 +1,24 @@
+{
+  "name": "@ifthenpay/sdk-js",
+  "version": "1.0.0",
+  "description": "Ifthenpay payment SDK for browsers and Node.js",
+  "main": "ifthenpay.js",
+  "files": [
+    "ifthenpay.js"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ifthenpay/sdk-js.git"
+  },
+  "bugs": {
+    "email": "support@ifthenpay.com"
+  },
+  "keywords": [
+    "ifthenpay",
+    "payment",
+    "mbway",
+    "multibanco",
+    "payshop"
+  ]
+}

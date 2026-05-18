@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ifthenpay Browser SDK Example</title>
+    <style>
+      body {
+        box-sizing: border-box;
+        color: #202124;
+        display: flex;
+        flex-direction: column;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        height: 100vh;
+        line-height: 1.5;
+        margin: 0;
+        overflow: hidden;
+        padding: 2rem;
+      }
+
+      .notice {
+        background: #fff8e1;
+        border: 1px solid #f6d365;
+        border-radius: 8px;
+        padding: 1rem;
+      }
+
+      details {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin: 1rem 0;
+      }
+
+      summary {
+        cursor: pointer;
+        font-weight: 700;
+        padding: 1rem;
+      }
+
+      form {
+        border-top: 1px solid #eee;
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        padding: 1rem;
+      }
+
+      label {
+        display: grid;
+        font-size: 0.9rem;
+        font-weight: 600;
+        gap: 0.35rem;
+      }
+
+      .optional {
+        color: #999;
+        font-weight: 400;
+      }
+
+      input,
+      select,
+      textarea {
+        border: 1px solid #bbb;
+        border-radius: 6px;
+        font: inherit;
+        padding: 0.55rem;
+      }
+
+      textarea {
+        min-height: 5rem;
+      }
+
+      .full {
+        grid-column: 1 / -1;
+      }
+
+      .toggle {
+        align-items: center;
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .toggle input {
+        inline-size: 2.75rem;
+        margin: 0;
+        opacity: 0;
+        position: absolute;
+      }
+
+      .toggle-track {
+        background: #b8b8b8;
+        border-radius: 999px;
+        display: inline-block;
+        height: 1.5rem;
+        position: relative;
+        transition: background 0.2s ease;
+        width: 2.75rem;
+      }
+
+      .toggle-track::after {
+        background: #fff;
+        border-radius: 50%;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+        content: "";
+        height: 1.15rem;
+        left: 0.18rem;
+        position: absolute;
+        top: 0.18rem;
+        transition: transform 0.2s ease;
+        width: 1.15rem;
+      }
+
+      .toggle input:checked + .toggle-track {
+        background: #2563eb;
+      }
+
+      .toggle input:checked + .toggle-track::after {
+        transform: translateX(1.25rem);
+      }
+
+      button {
+        align-items: center;
+        background: #2563eb;
+        border: 0;
+        border-radius: 6px;
+        color: #fff;
+        cursor: pointer;
+        display: inline-flex;
+        font-weight: 600;
+        justify-content: center;
+        padding: 0.7rem 1rem;
+      }
+
+      button:disabled {
+        cursor: wait;
+        opacity: 0.75;
+      }
+
+      button.is-loading::before {
+        animation: spin 0.8s linear infinite;
+        border: 2px solid rgba(255, 255, 255, 0.45);
+        border-radius: 50%;
+        border-top-color: #fff;
+        content: "";
+        height: 1rem;
+        margin-right: 0.5rem;
+        width: 1rem;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .auth-token-field {
+        display: grid;
+        font-size: 0.9rem;
+        font-weight: 600;
+        gap: 0.35rem;
+        margin: 0 0 1rem;
+      }
+
+      pre {
+        background: #f5f5f5;
+        border-radius: 8px;
+        overflow: hidden;
+        padding: 1rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+
+      .layout {
+        display: grid;
+        flex: 1;
+        gap: 2rem;
+        grid-template-columns: 1fr minmax(300px, 35%);
+        grid-template-rows: 1fr;
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .forms {
+        min-height: 0;
+        overflow-y: auto;
+        padding-right: 0.5rem;
+      }
+
+      .output-panel {
+        align-content: start;
+      }
+
+      #output-method {
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        margin: 0 0 0.5rem;
+        text-transform: uppercase;
+        color: #2563eb;
+        min-height: 1.2em;
+      }
+
+      #output {
+        height: 280px;
+        margin: 0;
+        overflow-y: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Ifthenpay Browser SDK Example</h1>
+
+    <div class="layout">
+    <div class="forms">
+    <label class="auth-token-field">
+      Auth Token
+      <input id="auth-token" type="text" placeholder="your-auth-token" autocomplete="off" spellcheck="false">
+    </label>
+    <details>
+      <summary>MB WAY</summary>
+      <form id="mbway-form">
+        <label>Order ID <input name="orderId" value="1" required></label>
+        <label>Amount <input name="amount" value="1.00" required></label>
+        <label>Mobile number <input name="mobileNumber" value="351#912345678" required></label>
+        <label><span>Email <span class="optional">(optional)</span></span> <input name="email" value=""></label>
+        <button class="full" type="submit">Generate MB WAY Payment</button>
+      </form>
+    </details>
+
+    <details>
+      <summary>Multibanco</summary>
+      <form id="multibanco-form">
+        <label>Order ID <input name="orderId" value="1" required></label>
+        <label>Amount <input name="amount" value="1.00" required></label>
+        <button class="full" type="submit">Generate Multibanco Payment</button>
+      </form>
+    </details>
+
+    <details>
+      <summary>Payshop</summary>
+      <form id="payshop-form">
+        <label>Order ID <input name="orderId" value="1" required></label>
+        <label>Amount <input name="amount" value="1.00" required></label>
+        <button class="full" type="submit">Generate Payshop Payment</button>
+      </form>
+    </details>
+
+    <details>
+      <summary>PIX</summary>
+      <form id="pix-form">
+        <label>Order ID <input name="orderId" value="1" required></label>
+        <label>Amount <input name="amount" value="1.00" required></label>
+        <label>CPF <input name="cpf" value="111.111.111-11" required></label>
+        <label>Name <input name="name" value="Buyer Name" required></label>
+        <label>Email <input name="email" value="buyer@example.com" required></label>
+        <label>Mobile number <input name="mobileNumber" value="351#912345678" required></label>
+        <label>Redirect URL <input name="redirectUrl" value="https://example.com/return" required></label>
+        <button class="full" type="submit">Generate PIX Payment</button>
+      </form>
+    </details>
+
+    <details>
+      <summary>Credit Card</summary>
+      <form id="credit-card-form">
+        <label>Order ID <input name="orderId" value="1" required></label>
+        <label>Amount <input name="amount" value="1.00" required></label>
+        <label><span>Success URL <span class="optional">(optional)</span></span> <input name="successUrl"></label>
+        <label><span>Error URL <span class="optional">(optional)</span></span> <input name="errorUrl"></label>
+        <label><span>Cancel URL <span class="optional">(optional)</span></span> <input name="cancelUrl"></label>
+        <label>
+          Language
+          <select name="language">
+            <option value="pt">pt</option>
+            <option value="en">en</option>
+            <option value="es">es</option>
+            <option value="fr">fr</option>
+          </select>
+        </label>
+        <button class="full" type="submit">Generate Credit Card Payment</button>
+      </form>
+    </details>
+
+    <details>
+      <summary>Cofidis</summary>
+      <form id="cofidis-form">
+        <label>Order ID <input name="orderId" value="1" required></label>
+        <label>Amount <input name="amount" value="1.00" required></label>
+        <label>Return URL <input name="returnUrl" value="https://example.com/cofidis-return" required></label>
+        <label><span>Customer name <span class="optional">(optional)</span></span> <input name="customerName"></label>
+        <label><span>Customer VAT <span class="optional">(optional)</span></span> <input name="customerVat"></label>
+        <label><span>Customer email <span class="optional">(optional)</span></span> <input name="customerEmail"></label>
+        <label><span>Customer phone <span class="optional">(optional)</span></span> <input name="customerPhone"></label>
+        <button class="full" type="submit">Generate Cofidis Payment</button>
+      </form>
+    </details>
+
+    <details>
+      <summary>Pay by Link</summary>
+      <form id="pay-by-link-form">
+        <label>Order ID <input name="orderId" value="1" required></label>
+        <label>Amount <input name="amount" value="1.00" required></label>
+        <label><span>Success URL <span class="optional">(optional)</span></span> <input name="successUrl"></label>
+        <label><span>Error URL <span class="optional">(optional)</span></span> <input name="errorUrl"></label>
+        <label><span>Cancel URL <span class="optional">(optional)</span></span> <input name="cancelUrl"></label>
+        <label>
+          Language
+          <select name="language">
+            <option value="pt">pt</option>
+            <option value="en">en</option>
+            <option value="es">es</option>
+            <option value="fr">fr</option>
+          </select>
+        </label>
+        <label class="toggle">
+          <input name="otp" type="checkbox" checked>
+          <span class="toggle-track" aria-hidden="true"></span>
+          One time payment
+        </label>
+        <button class="full" type="submit">Generate Pay by Link Payment</button>
+      </form>
+    </details>
+
+    </div><!-- .forms -->
+    <div class="output-panel">
+      <div id="output-method"></div>
+      <pre id="output">Payment responses will appear here.</pre>
+    </div>
+    </div><!-- .layout -->
+
+    <script src="../ifthenpay.js"></script>
+    <script>
+      const output = document.querySelector('#output');
+      const outputMethod = document.querySelector('#output-method');
+
+      function formatResponse(value) {
+        return JSON.stringify(value, null, 2);
+      }
+
+      function formatError(error) {
+        return `${error.name}: ${error.message}\n${JSON.stringify(error.details || {}, null, 2)}`;
+      }
+
+      function show(value, method) {
+        outputMethod.textContent = method || '';
+        output.textContent = formatResponse(value);
+      }
+
+      function showError(error, method) {
+        outputMethod.textContent = method || '';
+        output.textContent = formatError(error);
+      }
+
+      document.querySelectorAll('details').forEach((detail) => {
+        detail.addEventListener('toggle', () => {
+          if (detail.open) {
+            document.querySelectorAll('details').forEach((other) => {
+              if (other !== detail) other.removeAttribute('open');
+            });
+          }
+        });
+      });
+
+      function formValues(form) {
+        return Object.fromEntries(new FormData(form).entries());
+      }
+
+      function optional(value) {
+        return value === '' ? undefined : value;
+      }
+
+      function bindPaymentForm(formId, method, createPayment) {
+        document.querySelector(`#${formId}`).addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const button = event.currentTarget.querySelector('button[type="submit"]');
+          const buttonText = button.textContent;
+          button.disabled = true;
+          button.classList.add('is-loading');
+          button.textContent = 'Generating...';
+          try {
+            const values = formValues(event.currentTarget);
+            const response = await createPayment(values);
+            show(response, method);
+          } catch (error) {
+            showError(error, method);
+          } finally {
+            button.disabled = false;
+            button.classList.remove('is-loading');
+            button.textContent = buttonText;
+          }
+        });
+      }
+
+      function getClient() {
+        const authToken = document.querySelector('#auth-token').value.trim();
+        if (!authToken) throw new Ifthenpay.ValidationError('Auth token is required.', { field: 'authToken' });
+        return Ifthenpay.createClient({ authToken });
+      }
+
+      bindPaymentForm('mbway-form', 'MB WAY', (values) => {
+        return getClient().mbway.createPayment({
+          orderId: values.orderId,
+          amount: values.amount,
+          mobileNumber: values.mobileNumber,
+          email: optional(values.email)
+        });
+      });
+
+      bindPaymentForm('multibanco-form', 'Multibanco', (values) => {
+        return getClient().multibanco.createPayment({
+          orderId: values.orderId,
+          amount: values.amount
+        });
+      });
+
+      bindPaymentForm('payshop-form', 'Payshop', (values) => {
+        return getClient().payshop.createPayment({
+          orderId: values.orderId,
+          amount: values.amount
+        });
+      });
+
+      bindPaymentForm('pix-form', 'PIX', (values) => {
+        return getClient().pix.createPayment({
+          orderId: values.orderId,
+          amount: values.amount,
+          cpf: values.cpf,
+          name: values.name,
+          email: values.email,
+          mobileNumber: values.mobileNumber,
+          redirectUrl: values.redirectUrl
+        });
+      });
+
+      bindPaymentForm('credit-card-form', 'Credit Card', (values) => {
+        return getClient().creditCard.createPayment({
+          orderId: values.orderId,
+          amount: values.amount,
+          language: values.language,
+          successUrl: optional(values.successUrl),
+          errorUrl: optional(values.errorUrl),
+          cancelUrl: optional(values.cancelUrl)
+        });
+      });
+
+      bindPaymentForm('cofidis-form', 'Cofidis', (values) => {
+        return getClient().cofidis.createPayment({
+          orderId: values.orderId,
+          amount: values.amount,
+          returnUrl: values.returnUrl,
+          customerData: {
+            name: optional(values.customerName),
+            vat: optional(values.customerVat),
+            email: optional(values.customerEmail),
+            phone: optional(values.customerPhone)
+          }
+        });
+      });
+
+      bindPaymentForm('pay-by-link-form', 'Pay by Link', (values) => {
+        return getClient().payByLink.createPayment({
+          orderId: values.orderId,
+          amount: values.amount,
+          language: values.language,
+          successUrl: optional(values.successUrl),
+          errorUrl: optional(values.errorUrl),
+          cancelUrl: optional(values.cancelUrl),
+          otp: values.otp === 'on'
+        });
+      });
+    </script>
+  </body>
+</html>
