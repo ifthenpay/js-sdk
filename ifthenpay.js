@@ -129,7 +129,6 @@
         email: validateEmail(request.email, 'email', true),
         description: validateMaxLength(account.gatewayDescription, 'description', 100),
       });
-      console.log('[ifthenpay] mbway POST body:', body);
       return requestJson(fetchImpl, ENDPOINTS.mbwayInit, body).then(function then(response) {
         assertRecord(response, 'MB WAY payment request returned unexpected response.');
         assertSuccess(readString(response, 'Status'), '000', 'MB WAY payment request returned an error response.', response);
@@ -159,7 +158,6 @@
           description: validateMaxLength(account.gatewayDescription, 'description', 255),
           expiryDays: daysToExpire,
         });
-        console.log('[ifthenpay] multibanco POST body:', body);
         return requestJson(fetchImpl, ENDPOINTS.multibancoInit, body).then(function then(response) {
           assertRecord(response, 'Multibanco payment request returned unexpected response.');
           assertSuccess(readString(response, 'Status'), '0', 'Multibanco payment request returned an error response.', response);
@@ -202,7 +200,6 @@
         valor: validateAmountMaxLength(normalizeAmount(request.amount)),
         validade: daysToExpire === undefined ? undefined : futureDateYmd(daysToExpire),
       });
-      console.log('[ifthenpay] payshop POST body:', body);
       return requestJson(fetchImpl, ENDPOINTS.payshopInit, body).then(function then(response) {
         assertRecord(response, 'Payshop payment request returned unexpected response.');
         assertSuccess(readString(response, 'Code'), '0', 'Payshop payment request returned an error response.', response);
@@ -236,7 +233,6 @@
         redirectUrl: validateUrl(request.redirectUrl, 'redirectUrl', 200),
         description: validateMaxLength(account.gatewayDescription, 'description', 100),
       });
-      console.log('[ifthenpay] pix POST body:', body);
       return requestJson(fetchImpl, ENDPOINTS.pixInit + key, body).then(function then(response) {
         assertRecord(response, 'PIX payment request returned unexpected response.');
         assertSuccess(readString(response, 'status'), '0', 'PIX payment request returned an error response.', response);
@@ -265,7 +261,6 @@
         cancelUrl: validateUrl(request.cancelUrl || config.creditCardCancelUrl, 'cancelUrl', 200, true),
         language: validateLanguage(request.language || config.language),
       });
-      console.log('[ifthenpay] creditCard POST body:', body);
       return requestJson(fetchImpl, ENDPOINTS.creditCardInit + key, body).then(function then(response) {
         assertRecord(response, 'Credit card payment request returned unexpected response.');
         assertSuccess(readString(response, 'Status'), '0', 'Credit card payment request returned an error response.', response);
@@ -306,7 +301,6 @@
         deliveryZipCode: validateMaxLength(data.deliveryZipCode || '', 'deliveryZipCode', 20),
         deliveryCity: validateMaxLength(data.deliveryCity || '', 'deliveryCity', 50),
       });
-      console.log('[ifthenpay] cofidis POST body:', body);
       return requestJson(fetchImpl, ENDPOINTS.cofidisInit + key, body).then(function then(response) {
         assertRecord(response, 'Cofidis payment request returned unexpected response.');
         assertSuccess(readString(response, 'status'), '0', 'Cofidis payment request returned an error response.', response);
@@ -352,7 +346,6 @@
         otp: validateBoolean(otp, 'otp') ? 'true' : 'false',
         language: validateLanguage(request.language || config.language),
       });
-      console.log('[ifthenpay] payByLink POST body:', body);
       return requestJson(fetchImpl, ENDPOINTS.payByLinkInit + key, body).then(function then(response) {
         assertRecord(response, 'Pay by Link payment request returned unexpected response.');
         return {
@@ -444,7 +437,6 @@
           gatewayDescription: readString(data, 'gatewayDescription'),
           paymentData: paymentDataMatch ? paymentDataMatch[0] : undefined,
         };
-        console.log('[ifthenpay] fetchConfig result:', resolvedConfig);
         return resolvedConfig;
       });
     });

@@ -6,14 +6,16 @@ The package has no external dependencies and requires no build step. In a browse
 
 ## Installation
 
-```bash
-npm install @ifthenpay/sdk-js
-```
-
-Or add it directly in a browser with a `<script>` tag:
+The simplest option is to download `ifthenpay.js` directly and include it in your project — no npm, no build step, no pull request needed.
 
 ```html
 <script src="./ifthenpay.js"></script>
+```
+
+Or install via npm:
+
+```bash
+npm install @ifthenpay/sdk-js
 ```
 
 ## What It Does
