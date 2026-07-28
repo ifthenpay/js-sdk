@@ -284,20 +284,6 @@
     </details>
 
     <details>
-      <summary>Cofidis</summary>
-      <form id="cofidis-form">
-        <label>Order ID <input name="orderId" value="1" required></label>
-        <label>Amount <input name="amount" value="1.00" required></label>
-        <label>Return URL <input name="returnUrl" value="https://example.com/cofidis-return" required></label>
-        <label><span>Customer name <span class="optional">(optional)</span></span> <input name="customerName"></label>
-        <label><span>Customer VAT <span class="optional">(optional)</span></span> <input name="customerVat"></label>
-        <label><span>Customer email <span class="optional">(optional)</span></span> <input name="customerEmail"></label>
-        <label><span>Customer phone <span class="optional">(optional)</span></span> <input name="customerPhone"></label>
-        <button class="full" type="submit">Generate Cofidis Payment</button>
-      </form>
-    </details>
-
-    <details>
       <summary>Pay by Link</summary>
       <form id="pay-by-link-form">
         <label>Order ID <input name="orderId" value="1" required></label>
@@ -467,20 +453,6 @@
           successUrl: optional(values.successUrl),
           errorUrl: optional(values.errorUrl),
           cancelUrl: optional(values.cancelUrl)
-        });
-      });
-
-      bindPaymentForm('cofidis-form', 'Cofidis', (values) => {
-        return getClient().cofidis.createPayment({
-          orderId: values.orderId,
-          amount: values.amount,
-          returnUrl: values.returnUrl,
-          customerData: {
-            name: optional(values.customerName),
-            vat: optional(values.customerVat),
-            email: optional(values.customerEmail),
-            phone: optional(values.customerPhone)
-          }
         });
       });
 

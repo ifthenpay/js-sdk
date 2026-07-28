@@ -27,7 +27,6 @@ The file exposes `ifthenpay.createClient(config)`. The client contains helpers f
 - Payshop references
 - PIX payments
 - Credit Card payments
-- Cofidis payments
 - Pay by Link payments
 
 It also includes basic field validation before sending requests, using the same key formats and common value formats expected by ifthenpay.
@@ -106,7 +105,6 @@ Creates and returns a client instance. Call this once and reuse it across reques
 | `creditCardSuccessUrl` | `string` | Optional | Default redirect URL after a successful Credit Card payment. Can be overridden per request. |
 | `creditCardErrorUrl` | `string` | Optional | Default redirect URL after a failed Credit Card payment. Can be overridden per request. |
 | `creditCardCancelUrl` | `string` | Optional | Default redirect URL when a Credit Card payment is cancelled. Can be overridden per request. |
-| `cofidisReturnUrl` | `string` | Optional* | Default return URL for Cofidis payments. *Required either here or per request. Can be overridden per request. |
 | `payByLinkSuccessUrl` | `string` | Optional | Default redirect URL after a successful Pay by Link payment. A `[TRANSACTIONID]` placeholder is appended automatically. Can be overridden per request. |
 | `payByLinkErrorUrl` | `string` | Optional | Default redirect URL after a failed Pay by Link payment. Can be overridden per request. |
 | `payByLinkCancelUrl` | `string` | Optional | Default redirect URL when a Pay by Link payment is cancelled. Can be overridden per request. |
@@ -244,47 +242,6 @@ Initiates a Credit Card payment.
 
 ---
 
-### `client.cofidis.createPayment(request)`
-
-Initiates a Cofidis payment.
-
-| Parameter | Type | Required | Description |
-|---|---|---|---|
-| `orderId` | `string` | **Required** | Your order identifier (max 15 chars). |
-| `amount` | `string \| number` | **Required** | Amount to charge. Same format rules as MB WAY. |
-| `returnUrl` | `string` | **Required*** | Return URL after payment (valid URL, max 200 chars). *Can be set as `cofidisReturnUrl` on the client instead. |
-| `customerData` | `object` | Optional | Object with optional buyer details (see below). |
-
-**`customerData` fields** (all optional):
-
-| Field | Type | Description |
-|---|---|---|
-| `name` | `string` | Customer's full name (max 100 chars). |
-| `vat` | `string` | Customer's VAT number (max 20 chars). |
-| `email` | `string` | Customer's email address (max 100 chars). |
-| `phone` | `string` | Customer's phone number (max 15 chars). |
-| `billingAddress` | `string` | Billing street address (max 150 chars). |
-| `billingZipCode` | `string` | Billing ZIP / postal code (max 20 chars). |
-| `billingCity` | `string` | Billing city (max 50 chars). |
-| `deliveryAddress` | `string` | Delivery street address (max 150 chars). |
-| `deliveryZipCode` | `string` | Delivery ZIP / postal code (max 20 chars). |
-| `deliveryCity` | `string` | Delivery city (max 50 chars). |
-
-**Returns:**
-
-```js
-{
-  amount: '10.99',
-  orderId: 'order-6',
-  transactionId: 'abc123',
-  paymentUrl: 'https://...',
-  status: 'pending',
-  createdAt: '2026-05-13T15:00:00.000Z'
-}
-```
-
----
-
 ### `client.pix.createPayment(request)`
 
 Initiates a PIX payment.
@@ -357,11 +314,11 @@ All payment creation methods return plain objects. Fields present in the respons
 | `orderId` | `string` | All |
 | `status` | `'pending'` | All |
 | `createdAt` | `string` (ISO 8601) | All |
-| `transactionId` | `string` | MB WAY, Multibanco (dynamic), Payshop, PIX, Credit Card, Cofidis |
+| `transactionId` | `string` | MB WAY, Multibanco (dynamic), Payshop, PIX, Credit Card |
 | `pinCode` | `string` | Pay by Link |
 | `entity` | `string` | Multibanco |
 | `reference` | `string` | Multibanco, Payshop |
-| `paymentUrl` | `string` | PIX, Credit Card, Cofidis, Pay by Link |
+| `paymentUrl` | `string` | PIX, Credit Card, Pay by Link |
 | `qrCodeValue` | `string` | PIX |
 | `mobileNumber` | `string` | MB WAY |
 | `expiresAt` | `string` (ISO 8601) | MB WAY, Multibanco (when configured), Payshop (when configured), Pay by Link (when configured) |
